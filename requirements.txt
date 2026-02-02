@@ -8,7 +8,6 @@ bitsandbytes
 datasets
 sentence-transformers
 FlagEmbedding
-faiss-cpu
 pandas
 numpy
 tqdm
@@ -16,3 +15,6 @@ openai
 anthropic
 python-dotenv
 ipykernel
+wandb
+matplotlib
+scikit-learn
