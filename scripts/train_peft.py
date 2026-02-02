@@ -10,8 +10,10 @@ from transformers import (
     TrainingArguments,
     Trainer,
     BitsAndBytesConfig,
-    DataCollatorWithPadding
+    DataCollatorWithPadding,
+    EarlyStoppingCallback
 )
+import wandb
 from peft import (
     prepare_model_for_kbit_training,
     LoraConfig,
@@ -124,20 +126,24 @@ def train():
     # 5. Training Arguments
     training_args = TrainingArguments(
         output_dir="models/reranker-peft-v1",
-        per_device_train_batch_size=32, # Batch size increased for RTX 5090
+        per_device_train_batch_size=32, # Proven stable speed for this environment
         per_device_eval_batch_size=32,
-        gradient_accumulation_steps=1, # No need for accumulation with large VRAM
+        gradient_accumulation_steps=1,
         learning_rate=2e-4,
         num_train_epochs=1,
         logging_steps=50,
         eval_strategy="steps",
-        eval_steps=1000, # Increased validation interval
+        eval_steps=1000,
         save_strategy="steps",
-        save_steps=1000, # Increased save interval
-        save_total_limit=2, # Keep only latest 2 checkpoints to save disk
+        save_steps=1000,
+        save_total_limit=2,
         bf16=True,
         push_to_hub=False,
-        report_to="none"
+        report_to="wandb",
+        run_name="korean-reranker-peft-v1",
+        load_best_model_at_end=True,
+        metric_for_best_model="loss",
+        greater_is_better=False
     )
     
     # 6. Trainer
@@ -147,9 +153,11 @@ def train():
         train_dataset=train_dataset,
         eval_dataset=val_dataset,
         processing_class=tokenizer, # Changed from tokenizer for newer transformers
+        callbacks=[EarlyStoppingCallback(early_stopping_patience=3)]
     )
     
     # 7. Start Training
+    wandb.init(project="korean-reranker-peft", name="reranker-peft-v1")
     print("Starting Training...")
     trainer.train()
     print("Training Completed.")
