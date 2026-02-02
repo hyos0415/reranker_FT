@@ -9,14 +9,33 @@ from transformers import AutoTokenizer, AutoModelForSequenceClassification
 class Evaluator:
     def __init__(self, model_name='BAAI/bge-reranker-v2-m3'):
         print(f"Loading model for evaluation: {model_name}")
-        self.tokenizer = AutoTokenizer.from_pretrained(model_name)
-        # BGE-reranker-v2-m3 can be large, use float16 for eval
-        self.model = AutoModelForSequenceClassification.from_pretrained(
-            model_name, 
-            torch_dtype=torch.float16, 
-            device_map="auto",
-            trust_remote_code=True
-        )
+        
+        # Check if it's a PEFT adapter path (contains adapter_config.json)
+        is_peft = os.path.exists(os.path.join(model_name, "adapter_config.json"))
+        
+        if is_peft:
+            from peft import PeftModel, PeftConfig
+            config = PeftConfig.from_pretrained(model_name)
+            base_model_name = config.base_model_name_or_path
+            print(f"Detected PEFT adapter. Loading base model: {base_model_name}")
+            
+            self.tokenizer = AutoTokenizer.from_pretrained(base_model_name)
+            base_model = AutoModelForSequenceClassification.from_pretrained(
+                base_model_name,
+                torch_dtype=torch.float16,
+                device_map="auto",
+                trust_remote_code=True
+            )
+            self.model = PeftModel.from_pretrained(base_model, model_name)
+        else:
+            self.tokenizer = AutoTokenizer.from_pretrained(model_name)
+            self.model = AutoModelForSequenceClassification.from_pretrained(
+                model_name, 
+                torch_dtype=torch.float16, 
+                device_map="auto",
+                trust_remote_code=True
+            )
+        
         self.model.eval()
 
     def compute_score(self, pairs):
