@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+env/
+requirements_infra.txt
+
+# Large Data & Models
+data/
+models/
+*.bin
+*.pt
+*.jsonl
+
+# Environment & Secrets
+.env
+
+# OS
+.DS_Store
+Thumbs.db
