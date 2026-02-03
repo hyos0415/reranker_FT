@@ -11,7 +11,8 @@ from transformers import (
     Trainer,
     BitsAndBytesConfig,
     DataCollatorWithPadding,
-    EarlyStoppingCallback
+    EarlyStoppingCallback,
+    HfArgumentParser
 )
 import wandb
 from peft import (
@@ -32,8 +33,8 @@ class DataArguments:
     max_length: int = field(default=512)
 
 def train():
-    model_args = ModelArguments()
-    data_args = DataArguments()
+    parser = HfArgumentParser((ModelArguments, DataArguments, TrainingArguments))
+    model_args, data_args, training_args = parser.parse_args_into_dataclasses()
     
     # 1. Load Tokenizer
     tokenizer = AutoTokenizer.from_pretrained(model_args.model_name_or_path)
@@ -123,28 +124,20 @@ def train():
     train_dataset = dataset["train"].map(tokenize_function, batched=True, remove_columns=dataset["train"].column_names)
     val_dataset = dataset["validation"].map(tokenize_function, batched=True, remove_columns=dataset["validation"].column_names)
     
-    # 5. Training Arguments
-    training_args = TrainingArguments(
-        output_dir="models/reranker-peft-v1",
-        per_device_train_batch_size=32, # Proven stable speed for this environment
-        per_device_eval_batch_size=32,
-        gradient_accumulation_steps=1,
-        learning_rate=2e-4,
-        num_train_epochs=1,
-        logging_steps=50,
-        eval_strategy="steps",
-        eval_steps=1000,
-        save_strategy="steps",
-        save_steps=1000,
-        save_total_limit=2,
-        bf16=True,
-        push_to_hub=False,
-        report_to="wandb",
-        run_name="korean-reranker-peft-v1",
-        load_best_model_at_end=True,
-        metric_for_best_model="loss",
-        greater_is_better=False
-    )
+    # 5. Training Configuration
+    # We use the training_args already parsed by HfArgumentParser. 
+    # If the user didn't specify certain flags, we can set some project-specific defaults here if they aren't in the CLI.
+    # However, to avoid overwriting, it's better to rely on the parser.
+    # For now, let's ensure the output_dir and other critical params are consistent if not provided.
+    
+    if training_args.output_dir == "tmp_trainer": 
+        training_args.output_dir = "models/reranker-peft-v1"
+    training_args.bf16 = True
+    training_args.report_to = ["wandb"]
+    training_args.run_name = "korean-reranker-peft-v1"
+    training_args.load_best_model_at_end = True
+    training_args.metric_for_best_model = "loss"
+    training_args.greater_is_better = False
     
     # 6. Trainer
     trainer = Trainer(
