@@ -78,7 +78,10 @@ class Evaluator:
             # Since index 0 was our positive sample
             found_rank = np.where(ranked_indices == 0)[0][0] + 1
             
-            if found_rank == 1: hit_at_1 += 1
+            if found_rank == 1: 
+                hit_at_1 += 1
+            else:
+                item['hit_failed'] = True
             mrr += 1.0 / found_rank
         
         n = len(samples)
@@ -86,6 +89,18 @@ class Evaluator:
             "Hit@1": hit_at_1 / n,
             "MRR": mrr / n
         }
+        
+        # Save failure cases for targeted augmentation
+        failure_cases = [s for s in samples if s.get('hit_failed', False)]
+        if failure_cases:
+            os.makedirs('data', exist_ok=True)
+            with open('data/failure_cases.jsonl', 'w', encoding='utf-8') as f:
+                for case in failure_cases:
+                    # Remove the temporary flag before saving
+                    case.pop('hit_failed', None)
+                    f.write(json.dumps(case, ensure_ascii=False) + '\n')
+            print(f"Saved {len(failure_cases)} failure cases to data/failure_cases.jsonl")
+            
         return results
 
 if __name__ == "__main__":
