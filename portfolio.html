@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Reranker Portfolio | Korean Financial & Legal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Noto+Sans+KR:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00f2fe;
+            --secondary: #4facfe;
+            --bg: #0b0e14;
+            --card-bg: #161b22;
+            --text: #f0f6fc;
+            --accent: #ff007a;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Outfit', 'Noto Sans KR', sans-serif;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(circle at 50% 50%, #1a2332 0%, #0b0e14 100%);
+            text-align: center;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
+            opacity: 0.1;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .hero p {
+            font-size: 1.5rem;
+            color: #8b949e;
+            max-width: 800px;
+            animation: fadeInUp 1.2s ease-out;
+        }
+
+        /* Stats Grid */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            padding: 4rem 10%;
+            background: #0d1117;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 2.5rem;
+            border-radius: 20px;
+            border: 1px solid #30363d;
+            transition: transform 0.3s, border-color 0.3s;
+            text-align: center;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary);
+            box-shadow: 0 10px 30px rgba(0, 242, 254, 0.1);
+        }
+
+        .stat-val {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            color: #8b949e;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Content Section */
+        .section {
+            padding: 6rem 10%;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .image-container img {
+            width: 100%;
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+        h2 { font-size: 2.5rem; margin-bottom: 1.5rem; color: var(--secondary); }
+        
+        .badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: rgba(0, 242, 254, 0.1);
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            border-radius: 50px;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .footer {
+            padding: 4rem;
+            text-align: center;
+            border-top: 1px solid #30363d;
+            color: #8b949e;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            .content-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <section class="hero">
+        <div class="badge">AI Optimization Project</div>
+        <h1>Korean Reranker Excellence</h1>
+        <p>금융 및 법률 도메인 특화 한국어 리랭커 성능 고도화 프로젝트.<br>약점 정밀 타격(Targeted Fine-tuning)으로 Hit@1 0.96 달성.</p>
+    </section>
+
+    <section class="stats-container">
+        <div class="stat-card">
+            <span class="stat-label">Initial Baseline</span>
+            <span class="stat-val">0.90</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-label">1st Phase PEFT</span>
+            <span class="stat-val">0.93</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-label" style="color: var(--accent);">Final Achievement</span>
+            <span class="stat-val" style="color: var(--accent);">0.96</span>
+            <p style="font-size: 0.8rem; color: #8b949e; margin-top: 0.5rem;">Target Exceeded (Goal: 0.95)</p>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="content-grid">
+            <div class="text-content">
+                <div class="badge">The Strategy</div>
+                <h2>Targeted Incremental Fine-tuning</h2>
+                <p>단순한 데이터 증량이 아닌, 모델이 취약한 **'오답 사례'**에 집중하는 전략을 선택했습니다.</p>
+                <ul style="margin-top: 1.5rem; list-style: none; color: #8b949e;">
+                    <li style="margin-bottom: 1rem;">✅ <strong>오답 기반 증강</strong>: GPT-4o & Claude 4.5를 활용한 초고난도 트립릿 생성</li>
+                    <li style="margin-bottom: 1rem;">✅ <strong>시각적 검증</strong>: t-SNE 분석을 통한 데이터 분포 밀착도 확인</li>
+                    <li style="margin-bottom: 1rem;">✅ <strong>효율적 학습</strong>: 8시간의 학습을 단 5분으로 단축시킨 스파르타 특수 훈련</li>
+                </ul>
+            </div>
+            <div class="image-container">
+                <!-- t-SNE 이미지 경로를 아래에 입력 (사용자 로컬 경로) -->
+                <div style="background: var(--card-bg); padding: 4rem; border-radius: 20px; text-align: center; border: 1px dashed #30363d;">
+                    <p style="color: #8b949e;">[ t-SNE Visualization Analysis ]</p>
+                    <p style="font-size: 0.8rem; margin-top: 1rem;">GPT와 Claude가 모델의 약점을 정밀 타격함</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>&copy; 2026 Reranker PEFT Project Portfolio. Prepared for Excellence.</p>
+    </footer>
+
+</body>
+</html>
