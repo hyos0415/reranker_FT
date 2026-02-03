@@ -14,17 +14,20 @@ def load_queries(file_path, limit=500):
                 break
     return queries
 
-def visualize(original_file, augmented_file):
+def visualize(file_list, labels, output_path="data/distribution_comparison.png"):
     print("Loading models and data for visualization...")
     device = "cuda" if torch.cuda.is_available() else "cpu"
     model = SentenceTransformer("BAAI/bge-m3", device=device)
     
-    orig_queries = load_queries(original_file)
-    aug_queries = load_queries(augmented_file)
+    all_queries = []
+    file_indices = []
     
-    all_queries = orig_queries + aug_queries
+    for file_path in file_list:
+        queries = load_queries(file_path)
+        file_indices.append(len(queries))
+        all_queries.extend(queries)
     
-    print(f"Encoding {len(all_queries)} queries...")
+    print(f"Total queries to encode: {len(all_queries)}...")
     embeddings = model.encode(all_queries, show_progress_bar=True)
     
     print("Running t-SNE (this may take a minute)...")
@@ -33,29 +36,32 @@ def visualize(original_file, augmented_file):
     
     # Plotting
     plt.figure(figsize=(12, 8))
+    colors = ['blue', 'red', 'green', 'orange', 'purple']
     
-    n_orig = len(orig_queries)
-    plt.scatter(embeddings_2d[:n_orig, 0], embeddings_2d[:n_orig, 1], 
-                alpha=0.6, label='Original Data (Hard)', c='blue', s=50)
-    plt.scatter(embeddings_2d[n_orig:, 0], embeddings_2d[n_orig:, 1], 
-                alpha=0.6, label='Augmented Data (LLM)', c='red', s=50)
+    start_idx = 0
+    for i, (count, label) in enumerate(zip(file_indices, labels)):
+        end_idx = start_idx + count
+        plt.scatter(embeddings_2d[start_idx:end_idx, 0], 
+                    embeddings_2d[start_idx:end_idx, 1], 
+                    alpha=0.6, label=label, c=colors[i % len(colors)], s=50)
+        start_idx = end_idx
     
-    plt.title("Distribution of Original vs Augmented Queries (t-SNE)")
+    plt.title("Distribution of Queries: Original vs GPT vs Claude (t-SNE)")
     plt.legend()
     plt.grid(True, linestyle='--', alpha=0.3)
     
-    output_path = "data/distribution_comparison.png"
     plt.savefig(output_path)
     print(f"Visualization saved to {output_path}")
     plt.show()
 
 if __name__ == "__main__":
-    # Example paths
-    orig_path = "data/hard_train_triplets.jsonl"
-    aug_path = "data/augmented_train_triplets.jsonl"
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--files", nargs='+', required=True, help="List of jsonl files to visualize")
+    parser.add_argument("--labels", nargs='+', required=True, help="Labels for each file")
+    args = parser.parse_args()
     
-    import os
-    if os.path.exists(orig_path) and os.path.exists(aug_path):
-        visualize(orig_path, aug_path)
+    if len(args.files) != len(args.labels):
+        print("Error: Number of files must match number of labels.")
     else:
-        print("Required data files not found for visualization.")
+        visualize(args.files, args.labels)
