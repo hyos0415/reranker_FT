@@ -36,6 +36,3 @@ python scripts/train_final.py \
   --model_name_or_path models/reranker-peft-v1/checkpoint-4000 \
   --train_data_path data/targeted_train_triplets.jsonl
 ```
-
----
-**Created by Antigravity (Advanced Agentic Coding Pair)**
