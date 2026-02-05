@@ -2,15 +2,15 @@
 
 ## 1. 서론 (Introduction)
 
-본 프로젝트는 한국어 금융 및 법률 도메인에 특화된 고성능 리랭커(Reranker) 모델을 개발하는 것을 목표로 하였습니다. 금융 및 법률 문서는 전문 용어의 비중이 높고 문맥적 미묘함이 중요하여, 범용 모델만으로는 높은 검색 정확도를 보장하기 어렵습니다. 이를 해결하기 위해 PEFT(Parameter-Efficient Fine-Tuning) 기술과 전략적 데이터 증강 기법을 결합하여, 실전 검색 엔진 수준의 정확도(Hit@1 0.96)를 확보하였습니다.
+본 프로젝트는 한국어 금융 및 법률 도메인에 특화된 고성능 리랭커(Reranker) 모델을 개발하는 것을 목표로 하였습니다. 금융 및 법률 문서는 전문 용어의 비중이 높고 문맥적 미묘함이 중요하여, 범용 모델만으로는 높은 검색 정확도를 보장하기 어렵습니다. 이를 해결하기 위해 PEFT(Parameter-Efficient Fine-Tuning) 기술과 전략적 데이터 증강 기법을 결합하여, Hit@1 0.96를 달성하였습니다.
 
 ## 2. 데이터셋 및 전처리 (Dataset & Preprocessing)
 
 ### 2.1 AI-Hub 소스 데이터 활용
 AI-Hub의 '금융, 법률 문서 기계독해(MRC) 데이터'를 기반으로 학습 및 평가 데이터셋을 구축하였습니다. 실제 도메인 지식이 반영된 질의-문서 쌍을 활용하여 모델의 전문성을 높였습니다.
 
-### 2.2 Hard Negative Mining (하드 네거티브 채굴)
-단순한 무작위 음성 샘플(Random Negatives) 대신, 모델이 정답과 혼동하기 쉬운 **하드 네거티브(Hard Negatives)**를 채굴하는 전략을 사용했습니다.
+### 2.2 Hard Negative Mining
+단순한 무작위 음성 샘플(Random Negatives) 대신, 모델이 정답과 혼동하기 쉬운 **하드 네거티브(Hard Negatives)**를 사용했습니다.
 - PyTorch GPU 가속 기반의 Matrix Multiplication 검색 엔진을 자체 구현하여 대규모 데이터(9.3만 건)에 대한 채굴 시간을 단축했습니다.
 - 벡터 검색(BGE-M3 Embedding)을 통해 질문과 유사하지만 정답은 아닌 문서를 추출하여 학습 난이도를 높였습니다.
 
@@ -22,7 +22,6 @@ GPT-4o-mini 및 Claude 4.0 Sonnet을 활용하여 모델의 취약점을 보완�
 ### 3.1 베이스 모델 및 기법
 - **Base Model**: `BAAI/bge-reranker-v2-m3` (다국어 지원 및 높은 베이스 성능)
 - **학습 프레임워크 분석**: 
-    - 본 프로젝트에서는 BGE 모델의 특성을 극대화하기 위해 일반적인 HuggingFace Cross-Encode 방식과 차별화된 학습 전략을 검토함.
     
 | 구분 | CrossEncoder (HF) | BGE/FlagEmbedding (Reranker) |
 | :--- | :--- | :--- |
@@ -30,11 +29,11 @@ GPT-4o-mini 및 Claude 4.0 Sonnet을 활용하여 모델의 취약점을 보완�
 | **학습 목표** | 각 문장이 정답일 확률(0~1) 예측 | 질문에 대해 정답 문서의 상대적 순위를 높임 |
 | **Loss 함수** | BCE (Binary Cross Entropy) | **Contrastive Loss / Ranking Cross-Entropy** |
 | **데이터 구조** | (질문, 문서) 단일 쌍 | (질문, 정답, [여러 하드 네거티브]) 그룹 |
-| **적용 가능 모델** | BERT, RoBERTa 기반 순수 분류기 | **BGE-M3, GTE, Jina-Reranker** 등 최신 모델 |
+| **적용 가능 모델** | BERT, RoBERTa 등 | **BGE-M3, GTE, Jina-Reranker** 등 |
 
 - **선택 전략**: 단순 이진 분류보다 정답과 오답 간의 점수 격차를 벌리는 **List-wise Ranking Loss** 개념을 적용하여, 금융/법률 문서의 미세한 문맥 차이를 더 정교하게 학습함.
-- **PEFT 기법**: LoRA (Low-Rank Adaptation)
-    - Full Fine-tuning 대신 LoRA를 사용함으로써 적은 리소스로도 효율적인 도메인 적응을 수행했습니다.
+- **PEFT 기법**: QLoRA 
+    - Full Fine-tuning 대신 QLoRA를 사용함으로써 적은 리소스로도 효율적인 도메인 적응을 수행했습니다.
     - BitsAndBytes 4-bit 양자화를 도입하여 VRAM 효율성을 극대화했습니다.
 
 ### 3.2 하드웨어 환경
@@ -60,7 +59,3 @@ GPT-4o-mini 및 Claude 4.0 Sonnet을 활용하여 모델의 취약점을 보완�
 | **Stage 3** | **최종 Targeted PEFT** | **0.9600** | **0.9755** | **오답 집중 보완 완료** |
 
 최종적으로 목표치인 Hit@1 0.95를 초과 달성한 **0.9600**의 성능을 기록했습니다.
-
-## 6. 결론 (Conclusion)
-
-본 프로젝트는 단순히 데이터의 '양'을 늘리는 것보다, 모델의 취약 구간을 분석하고 이를 LLM으로 정밀 타격하는 **'질적 데이터 전략'**이 도메인 특화 모델 개발에 얼마나 중요한지를 입증했습니다. 특히 증분 학습 기술을 통해 학습 리소스를 획기적으로 절감하며 최상위 성능을 달성한 점은 실제 산업 현장에서의 높은 적용 가능성을 보여줍니다.
