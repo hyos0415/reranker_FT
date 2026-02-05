@@ -207,13 +207,14 @@
         <div class="content-grid">
             <div class="text-content">
                 <div class="badge">The Strategy</div>
-                <h2>Targeted Incremental Fine-tuning</h2>
-                <p>단순한 데이터 증량이 아닌, 모델이 취약한 **'오답 사례'**에 집중하는 전략을 선택했습니다.</p>
+                <h2>Point-wise Regression & Calibration</h2>
+                <p>단순한 데이터 증량이 아닌, 사전 학습된 순위 능력을 유지하며 도메인 특화 점수를 정교하게 영점 조절(Calibration)하는 전략을 선택했습니다.</p>
                 <ul style="margin-top: 1.5rem; list-style: none; color: #8b949e;">
-                    <li style="margin-bottom: 1rem;">✅ <strong>오답 기반 증강</strong>: GPT-4o & Claude 4.0을 활용한 고난도 트리플렛 생성
-                    </li>
-                    <li style="margin-bottom: 1rem;">✅ <strong>정밀 점수 교정</strong>: 사전 학습된 순위 능력을 유지하며 도메인 특화 점수를 보정</li>
-                    <li style="margin-bottom: 1rem;">✅ <strong>압도적 효율성</strong>: 8시간의 전체 학습 대신 단 30분의 증분 학습으로 성능 극대화
+                    <li style="margin-bottom: 1rem;">✅ <strong>지식 보존(Knowledge Preservation)</strong>: BGE-M3의 강력한 순위 지정
+                        능력을 파괴하지 않고 유지</li>
+                    <li style="margin-bottom: 1rem;">✅ <strong>정밀 스코어 교정</strong>: Point-wise 회귀 학습을 통한 한국어 금융/법률 맞춤형 점수
+                        보정</li>
+                    <li style="margin-bottom: 1rem;">✅ <strong>효율성</strong>: 8시간의 전체 학습 대신 단 30분의 타겟 파인튜닝으로 성능 극대화
                     </li>
                 </ul>
             </div>
