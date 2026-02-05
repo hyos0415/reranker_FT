@@ -13,7 +13,7 @@
 ## 🌟 Key Features
 - **Targeted Augmentation**: GPT-4o-mini 및 Claude 4.0 Sonnet을 활용하여 모델의 취약점(Failure Cases)을 집중 보강.
 - **Incremental Tuning**: 기존 LoRA 가중치를 효율적으로 계승하여 오답 노트에 대해서만 집중 훈련 (8시간 → 10분 단축).
-- **Fast Vector Search**: PyTorch GPU 가속 기반 벡터 검색 시스템으로 수만 건의 하드 네거티브를 실시간 채굴.
+- **Fast Vector Search**: PyTorch GPU 가속 기반 벡터 검색 시스템으로 하드 네거티브 수집.
 - **Aesthetic Visualization**: t-SNE 분석을 통해 증강 데이터와 원본 데이터의 분포 및 타격 지점 시각화.
 
 ## 📁 Project Structure
