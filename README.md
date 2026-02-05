@@ -29,10 +29,9 @@
 
 ## 🚀 How to Run (Final Training)
 ```bash
-# 1. 오답 집중 데이터셋 생성
 python scripts/create_targeted_data.py
 
-# 2. 최종 0.96 고지 탈환을 위한 증분 학습
+
 python scripts/train_final.py \
   --model_name_or_path models/reranker-peft-v1/checkpoint-4000 \
   --train_data_path data/targeted_train_triplets.jsonl
