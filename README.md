@@ -1,14 +1,15 @@
-# 🚀 Korean Financial & Legal Reranker PEFT Project (Hit@1: 0.96)
+# Korean Financial & Legal Reranker PEFT
 
-이 프로젝트는 AI-Hub의 금융 및 법률 문서 기계독해(MRC) 데이터를 활용하여, 한국어 도메인에 특화된 고성능 리랭커(Reranker) 모델을 파인튜닝(PEFT)하는 프로젝트입니다. **오답 사례 기반 파인튜닝(Targeted Fine-tuning)** 전략을 통해 최종 **Hit@1 0.96**을 달성하였습니다.
+> ⚠️ **성능 수치 철회 (2026-08).** 평가 파이프라인 결함 4건이 확인되어
+> 이 저장소가 보고했던 Hit@1·MRR을 철회했습니다. 사유와 근거는
+> [`EVAL_AUDIT.md`](./EVAL_AUDIT.md)에 있습니다. 파이프라인 구현은 유효합니다.
 
-## 📊 최종 성능 결과 (Performance)
+이 프로젝트는 AI-Hub의 금융 및 법률 문서 기계독해(MRC) 데이터를 활용하여, 한국어 도메인에 특화된 고성능 리랭커(Reranker) 모델을 파인튜닝(PEFT)하는 프로젝트입니다. **오답 사례 기반 파인튜닝(Targeted Fine-tuning)** 전략을 적용했습니다.
 
-| 단계 | 모델 정보 | Hit@1 | MRR | 비고 |
-| :--- | :--- | :---: | :---: | :--- |
-| **Stage 1** | BAAI/bge-reranker-v2-m3 (Base) | ~0.90 | - | 초기 상태 |
-| **Stage 4** | 1차 PEFT (Hard Negatives) | 0.9300 | 0.9598 | 9.3만 개 트리플렛 학습 |
-| **Stage 6** | **2차 Targeted PEFT (최종)** | **0.9600** | **0.9755** | **오답 집중 증량 학습 완료** |
+## 성능
+
+보고 가능한 수치가 없습니다. 측정 파이프라인에 결함이 있었고 재측정이
+불가능합니다. [`EVAL_AUDIT.md`](./EVAL_AUDIT.md) 참조.
 
 ## 🌟 Key Features
 - **Targeted Augmentation**: GPT-4o-mini 및 Claude 4.0 Sonnet을 활용하여 모델의 취약점(Failure Cases)을 집중 보강.
@@ -20,7 +21,8 @@
 - `scripts/mine_hard_negatives.py`: 벡터 검색 기반 하드 네거티브 채굴
 - `scripts/augment_data.py`: GPT/Claude 기반 지능형 데이터 증강
 - `scripts/train_final.py`: 오답 집중 타겟팅 증분 학습 스크립트
-- `scripts/evaluate.py`: 최종 모델 성능(Hit@1, MRR) 검증 및 오답 노트 추출
+- `scripts/evaluate.py`: Hit@1·MRR 산출 및 오답 노트 추출
+  (⚠️ 시드 미고정 및 오염 경로 존재 — EVAL_AUDIT.md 결함 1·2)
 - `portfolio.html`: 프로젝트 성과를 시각화한 프리미엄 랜딩 페이지
 
 ## 🛠️ Hardware & Environment
