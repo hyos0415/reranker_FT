@@ -12,10 +12,11 @@
 불가능합니다. [`EVAL_AUDIT.md`](./EVAL_AUDIT.md) 참조.
 
 ## 🌟 Key Features
-- **Targeted Augmentation**: GPT-4o-mini 및 Claude 4.0 Sonnet을 활용하여 모델의 취약점(Failure Cases)을 집중 보강.
+- **Targeted Augmentation**: GPT-4o-mini 및 Claude 4.0 Sonnet으로 오답 사례 기반 트리플렛 증강.
+  (⚠️ 오답 사례가 검증셋에서 추출됨 — EVAL_AUDIT.md 결함 2)
 - **Incremental Tuning**: 기존 LoRA 가중치를 효율적으로 계승하여 오답 노트에 대해서만 집중 훈련 (8시간 → 30분 단축).
 - **Fast Vector Search**: PyTorch GPU 가속 기반 벡터 검색 시스템으로 하드 네거티브 수집.
-- **Aesthetic Visualization**: t-SNE 분석을 통해 증강 데이터와 원본 데이터의 분포 및 타격 지점 시각화.
+- **Aesthetic Visualization**: t-SNE로 증강 데이터와 원본 데이터의 분포 시각화.
 
 ## 📁 Project Structure
 - `scripts/mine_hard_negatives.py`: 벡터 검색 기반 하드 네거티브 채굴
@@ -23,7 +24,6 @@
 - `scripts/train_final.py`: 오답 집중 타겟팅 증분 학습 스크립트
 - `scripts/evaluate.py`: Hit@1·MRR 산출 및 오답 노트 추출
   (⚠️ 시드 미고정 및 오염 경로 존재 — EVAL_AUDIT.md 결함 1·2)
-- `portfolio.html`: 프로젝트 성과를 시각화한 프리미엄 랜딩 페이지
 
 ## 🛠️ Hardware & Environment
 - **GPU**: NVIDIA RTX 4090 / 5090 (RunPod)
